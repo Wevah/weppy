@@ -22,6 +22,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import <QuartzCore/QuartzCore.h>
+#import <Carbon/Carbon.h>
 #import "NZCGWebPFunctions.h"
 
 // Browser function table
