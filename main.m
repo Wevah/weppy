@@ -25,6 +25,8 @@
 #import <Carbon/Carbon.h>
 #import "NZCGWebPFunctions.h"
 
+#import "MenuHandler.h"
+
 // Browser function table
 static NPNetscapeFuncs* browser;
 
@@ -43,6 +45,9 @@ typedef struct PluginObject
 	NPBool drawCentered;
 
 	NPBool isFullWindow;
+	NSURL *url;
+
+	MenuHandler	*menuHandler;
 } PluginObject;
 
 NPError NPP_New(NPMIMEType pluginType, NPP instance, uint16_t mode, int16_t argc, char* argn[], char* argv[], NPSavedData* saved);
@@ -90,6 +95,7 @@ NPError NP_GetEntryPoints(NPPluginFuncs* pluginFuncs)
     pluginFuncs->urlnotify = NPP_URLNotify;
     pluginFuncs->getvalue = NPP_GetValue;
     pluginFuncs->setvalue = NPP_SetValue;
+	
     
     return NPERR_NO_ERROR;
 }
@@ -176,6 +182,7 @@ NPError NPP_Destroy(NPP instance, NPSavedData** save)
 	[obj->streamedData release];
 	if (obj->theImage)
 		CGImageRelease(obj->theImage);
+	[obj->menuHandler release];
     
     free(obj);
     
@@ -218,7 +225,6 @@ void RepositionLayerForInstanceAndWindow(NPP instance, NPWindow *window) {
 NPError NPP_SetWindow(NPP instance, NPWindow* window)
 {
     PluginObject *obj = instance->pdata;
-	
 	/*if (window->window)
 	{
 		NP_CGContext *npcontext = window->window;
@@ -246,7 +252,10 @@ NPError NPP_SetWindow(NPP instance, NPWindow* window)
 NPError NPP_NewStream(NPP instance, NPMIMEType type, NPStream* stream, NPBool seekable, uint16_t* stype)
 {
 	PluginObject *obj = instance->pdata;
-	
+
+	[obj->url release];
+	obj->url = [[NSURL alloc] initWithString:[NSString stringWithUTF8String:stream->url]];
+
 	*stype = NP_NORMAL;
 	[obj->streamedData release];
 	obj->streamedData = [[NSMutableData alloc] init];
@@ -266,7 +275,7 @@ NPError NPP_DestroyStream(NPP instance, NPStream* stream, NPReason reason)
 		{
 			[CATransaction begin];
 			[CATransaction setValue:[NSNumber numberWithBool:YES] forKey:kCATransactionDisableActions];	// we only want to display our image & not do anything fancy
-			obj->caLayer.contentsGravity = kCAGravityResize;
+			obj->caLayer.contentsGravity = obj->isFullWindow ? kCAGravityTop : kCAGravityResize;
 			obj->caLayer.contents = (id)obj->theImage;
 			[CATransaction commit];
 		}
@@ -360,6 +369,7 @@ static void DrawUsingCoreGraphics(PluginObject *obj, CGContextRef cgContext, NPB
 			theRect = CGRectMake(0.0, 0.0, obj->window.width, obj->window.height);
 		else
 			theRect = boundingBox;
+
 		CGContextDrawImage(cgContext, CGRectIntegral(theRect), obj->theImage);
 	}
 	[NSGraphicsContext setCurrentContext:oldContext];
@@ -404,6 +414,16 @@ int16_t NPP_HandleEvent(NPP instance, void* event)
 					DrawUsingCoreGraphics(obj, cocoaEvent->data.draw.context, TRUE);
 					return 1;
 				}
+				break;
+			case NPCocoaEventMouseDown:
+				if (cocoaEvent->data.mouse.buttonNumber == 1) {
+					if (!obj->menuHandler)
+						obj->menuHandler = [[MenuHandler alloc] initWithBrowserFuncs:browser instance:instance URL:obj->url];
+
+					browser->popupcontextmenu(instance, (NPMenu *)obj->menuHandler.menu);
+					return 1;
+				}
+
 				break;
 			default:
 				break;

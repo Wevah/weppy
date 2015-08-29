@@ -1,0 +1,11 @@
+/* 
+  Localizable.strings
+  Weppy
+
+  Created by Nate Weaver on 2015-08-28.
+
+*/
+
+VIEW_IMAGE = "View Image";
+COPY_ADDRESS = "Copy Image Address";
+COPY_IMAGE = "Copy Image";
