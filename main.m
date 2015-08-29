@@ -41,6 +41,8 @@ typedef struct PluginObject
 	NSMutableData *streamedData;
 	CGImageRef theImage;
 	NPBool drawCentered;
+
+	NPBool isFullWindow;
 } PluginObject;
 
 NPError NPP_New(NPMIMEType pluginType, NPP instance, uint16_t mode, int16_t argc, char* argn[], char* argv[], NPSavedData* saved);
@@ -155,6 +157,12 @@ NPError NPP_New(NPMIMEType pluginType, NPP instance, uint16_t mode, int16_t argc
 		obj->shouldUseCocoa = TRUE;
 	}
     
+
+	if (mode == NP_FULL)
+		obj->isFullWindow = TRUE;
+
+	obj->drawCentered = TRUE;
+
     return NPERR_NO_ERROR;
 }
 
@@ -174,6 +182,38 @@ NPError NPP_Destroy(NPP instance, NPSavedData** save)
     return NPERR_NO_ERROR;
 }
 
+
+void RepositionLayerForInstanceAndWindow(NPP instance, NPWindow *window) {
+	PluginObject *obj = instance->pdata;
+
+	[CATransaction begin];
+	[CATransaction setValue:[NSNumber numberWithBool:YES] forKey:kCATransactionDisableActions];	// don't animate this
+
+	CGFloat imageWidth = CGImageGetWidth(obj->theImage);
+	CGFloat imageHeight = CGImageGetHeight(obj->theImage);
+
+	if (window->width < imageWidth || window->height < imageHeight) {
+		obj->caLayer.contentsGravity = kCAGravityResizeAspect;
+
+		CGRect frame = obj->caLayer.frame;
+		frame.origin = CGPointMake(0.0, 0.0);
+		obj->caLayer.frame = frame;
+	} else {
+		obj->caLayer.contentsGravity = kCAGravityTop;
+
+		CGRect frame = obj->caLayer.frame;
+
+		// Avoid blurriness
+		CGFloat x = ((window->width - (NSUInteger)imageWidth) % 2 == 0) ? 0.0 : 0.5;
+		//CGFloat y = ((window->height - (NSUInteger)imageHeight) % 2 == 0) ? 0.0 : 0.5;
+
+		frame.origin = CGPointMake(x, 0.0);
+
+		obj->caLayer.frame = frame;
+	}
+
+	[CATransaction commit];
+}
 
 NPError NPP_SetWindow(NPP instance, NPWindow* window)
 {
@@ -195,6 +235,10 @@ NPError NPP_SetWindow(NPP instance, NPWindow* window)
 		obj->caLayer.frame = CGRectMake(0.0, 0.0, obj->window.width, obj->window.height);
 		[CATransaction commit];
 	}
+
+	if (obj->caLayer && obj->isFullWindow)
+		RepositionLayerForInstanceAndWindow(instance, window);
+
     return NPERR_NO_ERROR;
 }
 
