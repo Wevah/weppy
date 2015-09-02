@@ -30,25 +30,7 @@
 // Browser function table
 static NPNetscapeFuncs* browser;
 
-// Structure for per-instance storage
-typedef struct PluginObject
-{
-    NPP npp;
-    
-    NPWindow window;
-	
-	NPBool shouldUseCocoa;
-	CALayer *caLayer;
-	NPBool shouldInvalidateCALayer;
-	NSMutableData *streamedData;
-	CGImageRef theImage;
-	NPBool drawCentered;
-
-	NPBool isFullWindow;
-	NSURL *url;
-
-	MenuHandler	*menuHandler;
-} PluginObject;
+#import "PluginObject.h"
 
 NPError NPP_New(NPMIMEType pluginType, NPP instance, uint16_t mode, int16_t argc, char* argn[], char* argv[], NPSavedData* saved);
 NPError NPP_Destroy(NPP instance, NPSavedData** save);
