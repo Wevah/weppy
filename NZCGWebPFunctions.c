@@ -57,6 +57,9 @@ CGImageRef NZCGImageCreateUsingWebPData(CFDataRef webPData)
 		CGColorSpaceRelease(colorSpace);
 		CGDataProviderRelease(dataProvider);
 		CFRelease(pixelData);
+
+		free (rgba);
+
 		return theImage;
 	}
 	fprintf(stderr, "NZCGWebPFunctions: The data provided is not in WebP format.\n");
