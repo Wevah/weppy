@@ -47,7 +47,7 @@ CGImageRef NZCGImageCreateUsingWebPData(CFDataRef webPData)
 								 32,	// our data has four components
 								 wordsPerLine*4,	// there are 32 bits or 4 bytes in a word
 								 colorSpace,
-								 kCGBitmapByteOrder32Big | kCGImageAlphaLast,	// our data is in host-endian format
+								 kCGBitmapByteOrder32Big | kCGImageAlphaLast,	// our data is in big-endian format
 								 dataProvider,
 								 NULL,	// we don't care about decode arrays
 								 true,	// sure, why not interpolate?
