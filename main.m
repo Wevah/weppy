@@ -150,8 +150,6 @@ NPError NPP_New(NPMIMEType pluginType, NPP instance, uint16_t mode, int16_t argc
 	if (mode == NP_FULL)
 		obj->isFullWindow = TRUE;
 
-	obj->drawCentered = TRUE;
-
     return NPERR_NO_ERROR;
 }
 
@@ -197,7 +195,6 @@ void RepositionLayerForInstanceAndWindow(NPP instance, NPWindow *window) {
 			// Avoid blurriness
 			CGFloat x = ((window->width - (NSUInteger)imageWidth) % 2 == 0) ? 0.0 : 0.5;
 			//CGFloat y = ((window->height - (NSUInteger)imageHeight) % 2 == 0) ? 0.0 : 0.5;
-
 			frame.origin = CGPointMake(x, 0.0);
 
 			obj->caLayer.frame = frame;
