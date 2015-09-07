@@ -78,7 +78,6 @@ NPError NP_GetEntryPoints(NPPluginFuncs* pluginFuncs)
     pluginFuncs->getvalue = NPP_GetValue;
     pluginFuncs->setvalue = NPP_SetValue;
 	
-    
     return NPERR_NO_ERROR;
 }
 
@@ -132,7 +131,9 @@ NPError NPP_New(NPMIMEType pluginType, NPP instance, uint16_t mode, int16_t argc
 		}
 		else
 			browser->setvalue(instance, NPNVpluginDrawingModel, (void *)NPDrawingModelCoreAnimation);
+
 		obj->caLayer = [[CALayer alloc] init];
+		obj->caLayer.edgeAntialiasingMask = 0;
 	}
 	else
 	{
@@ -175,33 +176,35 @@ NPError NPP_Destroy(NPP instance, NPSavedData** save)
 void RepositionLayerForInstanceAndWindow(NPP instance, NPWindow *window) {
 	PluginObject *obj = instance->pdata;
 
-	[CATransaction begin];
-	[CATransaction setValue:[NSNumber numberWithBool:YES] forKey:kCATransactionDisableActions];	// don't animate this
+	if (!obj->drawCentered) {
+		[CATransaction begin];
+		[CATransaction setValue:[NSNumber numberWithBool:YES] forKey:kCATransactionDisableActions];	// don't animate this
 
-	CGFloat imageWidth = CGImageGetWidth(obj->theImage);
-	CGFloat imageHeight = CGImageGetHeight(obj->theImage);
+		CGFloat imageWidth = CGImageGetWidth(obj->theImage);
+		CGFloat imageHeight = CGImageGetHeight(obj->theImage);
 
-	if (window->width < imageWidth || window->height < imageHeight) {
-		obj->caLayer.contentsGravity = kCAGravityResizeAspect;
+		if (window->width < imageWidth || window->height < imageHeight) {
+			obj->caLayer.contentsGravity = kCAGravityResizeAspect;
 
-		CGRect frame = obj->caLayer.frame;
-		frame.origin = CGPointMake(0.0, 0.0);
-		obj->caLayer.frame = frame;
-	} else {
-		obj->caLayer.contentsGravity = kCAGravityTop;
+			CGRect frame = obj->caLayer.frame;
+			frame.origin = CGPointMake(0.0, 0.0);
+			obj->caLayer.frame = frame;
+		} else {
+			obj->caLayer.contentsGravity = kCAGravityTop;
 
-		CGRect frame = obj->caLayer.frame;
+			CGRect frame = obj->caLayer.frame;
 
-		// Avoid blurriness
-		CGFloat x = ((window->width - (NSUInteger)imageWidth) % 2 == 0) ? 0.0 : 0.5;
-		//CGFloat y = ((window->height - (NSUInteger)imageHeight) % 2 == 0) ? 0.0 : 0.5;
+			// Avoid blurriness
+			CGFloat x = ((window->width - (NSUInteger)imageWidth) % 2 == 0) ? 0.0 : 0.5;
+			//CGFloat y = ((window->height - (NSUInteger)imageHeight) % 2 == 0) ? 0.0 : 0.5;
 
-		frame.origin = CGPointMake(x, 0.0);
+			frame.origin = CGPointMake(x, 0.0);
 
-		obj->caLayer.frame = frame;
+			obj->caLayer.frame = frame;
+		}
+		
+		[CATransaction commit];
 	}
-
-	[CATransaction commit];
 }
 
 NPError NPP_SetWindow(NPP instance, NPWindow* window)
@@ -328,9 +331,11 @@ static void DrawUsingCoreGraphics(PluginObject *obj, CGContextRef cgContext, NPB
 	CGRect boundingBox = CGContextGetClipBoundingBox(cgContext);
 	CGSize imageSize = CGSizeMake(CGImageGetWidth(obj->theImage), CGImageGetHeight(obj->theImage));
 	
-	if (CGRectEqualToRect(boundingBox, CGRectZero))	// no bounding box, no draw operation
+	if (CGRectEqualToRect(boundingBox, CGRectZero))	{// no bounding box, no draw operation
+		[oldContext release];
 		return;
-	
+	}
+
 	[NSGraphicsContext setCurrentContext:context];
 	// Draw the background:
 	[[NSColor whiteColor] set];
@@ -354,7 +359,9 @@ static void DrawUsingCoreGraphics(PluginObject *obj, CGContextRef cgContext, NPB
 
 		CGContextDrawImage(cgContext, CGRectIntegral(theRect), obj->theImage);
 	}
+
 	[NSGraphicsContext setCurrentContext:oldContext];
+	[oldContext release];
 }
 
 
@@ -379,7 +386,6 @@ void NPP_Print(NPP instance, NPPrint* platformPrint)
 #endif
 }
 
-
 int16_t NPP_HandleEvent(NPP instance, void* event)
 {
 	PluginObject *obj = instance->pdata;
@@ -400,7 +406,7 @@ int16_t NPP_HandleEvent(NPP instance, void* event)
 			case NPCocoaEventMouseDown:
 				if (cocoaEvent->data.mouse.buttonNumber == 1) {
 					if (!obj->menuHandler)
-						obj->menuHandler = [[MenuHandler alloc] initWithBrowserFuncs:browser instance:instance URL:obj->url];
+						obj->menuHandler = [[MenuHandler alloc] initWithBrowserFuncs:browser instance:instance];
 
 					browser->popupcontextmenu(instance, (NPMenu *)obj->menuHandler.menu);
 					return 1;

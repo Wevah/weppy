@@ -50,6 +50,7 @@
 		B27061001B912F9700C6C234 /* MenuHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuHandler.h; sourceTree = "<group>"; };
 		B27061011B912F9700C6C234 /* MenuHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MenuHandler.m; sourceTree = "<group>"; };
 		B27061051B9144EA00C6C234 /* English */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
+		B27061081B92674200C6C234 /* PluginObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PluginObject.h; sourceTree = "<group>"; };
 		DD92D38A0106425D02CA0E72 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		E0013AB1125AC2E00093A888 /* Weppy.plugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Weppy.plugin; sourceTree = BUILT_PRODUCTS_DIR; };
 		E0013AB2125AC2E00093A888 /* Weppy (Netscape)-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Weppy (Netscape)-Info.plist"; sourceTree = "<group>"; };
@@ -138,6 +139,7 @@
 				0259C57AFE90428111CA0C5A /* WeppyView.h */,
 				0259C576FE90428111CA0C5A /* WeppyView.m */,
 				E0013AC2125AC3770093A888 /* main.m */,
+				B27061081B92674200C6C234 /* PluginObject.h */,
 				B27061001B912F9700C6C234 /* MenuHandler.h */,
 				B27061011B912F9700C6C234 /* MenuHandler.m */,
 				E0831F1812627B8200DEE127 /* Weppy.r */,

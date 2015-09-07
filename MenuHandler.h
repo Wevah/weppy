@@ -13,9 +13,8 @@
 @interface MenuHandler : NSObject
 
 - (instancetype)initWithBrowserFuncs:(NPNetscapeFuncs *)browserFuncs instance:(NPP)instance;
-- (instancetype)initWithBrowserFuncs:(NPNetscapeFuncs *)browserFuncs instance:(NPP)instance URL:(NSURL *)url;
+- (instancetype)initWithBrowserFuncs:(NPNetscapeFuncs *)browserFuncs instance:(NPP)instance;
 
 @property (readonly)	NSMenu	*menu;
-@property (copy)		NSURL	*sourceURL;
 
 @end
