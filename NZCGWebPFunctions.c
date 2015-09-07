@@ -58,7 +58,7 @@ CGImageRef NZCGImageCreateUsingWebPData(CFDataRef webPData)
 		CGDataProviderRelease(dataProvider);
 		CFRelease(pixelData);
 
-		free (rgba);
+		free(rgba);
 
 		return theImage;
 	}
