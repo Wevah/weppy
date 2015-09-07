@@ -14,13 +14,12 @@
 		B27061031B912F9B00C6C234 /* MenuHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = B27061011B912F9700C6C234 /* MenuHandler.m */; };
 		B27061061B9144EA00C6C234 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B27061041B9144EA00C6C234 /* Localizable.strings */; };
 		B27061071B9144ED00C6C234 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B27061041B9144EA00C6C234 /* Localizable.strings */; };
+		B270610A1B9E4F3D00C6C234 /* libwebp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B27061091B9E4F3D00C6C234 /* libwebp.a */; };
 		E0013AC3125AC3770093A888 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E0013AC2125AC3770093A888 /* main.m */; };
 		E0013AC8125AC3860093A888 /* NZCGWebPFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = E0013AC4125AC3860093A888 /* NZCGWebPFunctions.c */; };
-		E0013AC9125AC3860093A888 /* webpimg.c in Sources */ = {isa = PBXBuildFile; fileRef = E0013AC6125AC3860093A888 /* webpimg.c */; };
 		E0013ACA125AC3860093A888 /* NZCGWebPFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = E0013AC4125AC3860093A888 /* NZCGWebPFunctions.c */; };
 		E0013ACB125AC3860093A888 /* webpimg.c in Sources */ = {isa = PBXBuildFile; fileRef = E0013AC6125AC3860093A888 /* webpimg.c */; };
 		E0013ACE125AC3F00093A888 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E0013ACD125AC3F00093A888 /* QuartzCore.framework */; };
-		E0013AD0125AC40B0093A888 /* libvpx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E0013ACF125AC40B0093A888 /* libvpx.a */; };
 		E0013AD1125AC40B0093A888 /* libvpx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E0013ACF125AC40B0093A888 /* libvpx.a */; };
 		E0013ADB125AC4F90093A888 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD92D38A0106425D02CA0E72 /* Cocoa.framework */; };
 		E0013ADC125AC4FB0093A888 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E0013ACD125AC3F00093A888 /* QuartzCore.framework */; };
@@ -51,6 +50,7 @@
 		B27061011B912F9700C6C234 /* MenuHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MenuHandler.m; sourceTree = "<group>"; };
 		B27061051B9144EA00C6C234 /* English */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
 		B27061081B92674200C6C234 /* PluginObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PluginObject.h; sourceTree = "<group>"; };
+		B27061091B9E4F3D00C6C234 /* libwebp.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libwebp.a; path = ../../../../usr/local/lib/libwebp.a; sourceTree = "<group>"; };
 		DD92D38A0106425D02CA0E72 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		E0013AB1125AC2E00093A888 /* Weppy.plugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Weppy.plugin; sourceTree = BUILT_PRODUCTS_DIR; };
 		E0013AB2125AC2E00093A888 /* Weppy (Netscape)-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Weppy (Netscape)-Info.plist"; sourceTree = "<group>"; };
@@ -81,7 +81,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E0013AD0125AC40B0093A888 /* libvpx.a in Frameworks */,
+				B270610A1B9E4F3D00C6C234 /* libwebp.a in Frameworks */,
 				E0013ADB125AC4F90093A888 /* Cocoa.framework in Frameworks */,
 				E0013ADC125AC4FB0093A888 /* QuartzCore.framework in Frameworks */,
 			);
@@ -125,6 +125,7 @@
 		2E58F364FFB232C311CA0CBA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B27061091B9E4F3D00C6C234 /* libwebp.a */,
 				E0013ACF125AC40B0093A888 /* libvpx.a */,
 				DD92D38A0106425D02CA0E72 /* Cocoa.framework */,
 				224339570A6F05F3000348D4 /* WebKit.framework */,
@@ -266,7 +267,6 @@
 			files = (
 				E0013AC3125AC3770093A888 /* main.m in Sources */,
 				E0013AC8125AC3860093A888 /* NZCGWebPFunctions.c in Sources */,
-				E0013AC9125AC3860093A888 /* webpimg.c in Sources */,
 				B27061031B912F9B00C6C234 /* MenuHandler.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

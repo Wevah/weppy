@@ -16,33 +16,30 @@
 
 #include "NZCGWebPFunctions.h"
 #include <stdio.h>
-#include "webpimg.h"
+#include <webp/decode.h>
 
 CGImageRef NZCGImageCreateUsingWebPData(CFDataRef webPData)
 {
-	uint8 *y = NULL, *u = NULL, *v = NULL;
 	int32_t width, height;
 	
 	if (CFDataGetLength(webPData) > INT_MAX)	// highly unlikely to happen; just checking anyway
 		return NULL;
 	
 	// Step 1: Decode the data.
-	if (WebPDecode(CFDataGetBytePtr(webPData), (int)CFDataGetLength(webPData), &y, &u, &v, &width, &height) == webp_success)
+	uint8_t *rgba = WebPDecodeRGBA(CFDataGetBytePtr(webPData), (size_t)CFDataGetLength(webPData), &width, &height);
+
+	if (rgba)
 	{
 		const int32_t depth = 32;
 		const int wordsPerLine = (width*depth+31)/32;
 		size_t pixelBytesLength = 4*height*wordsPerLine;	// Google's documentation is incorrect here; the length has to be quadrupled or we'll have an overrun
-		uint32 *pixelBytes = malloc(pixelBytesLength);
 		CFDataRef pixelData;
 		CGDataProviderRef dataProvider;
 		CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
 		CGImageRef theImage;
-		
-		// Step 2: Convert the YUV data into RGB.
-		YUV420toRGBA(y, u, v, wordsPerLine, width, height, pixelBytes);
-		
-		// Step 3: Convert the RGB data into a CGImageRef.
-		pixelData = CFDataCreateWithBytesNoCopy(NULL, (const UInt8 *)pixelBytes, pixelBytesLength, NULL);
+
+		// Step 2: Convert the RGB data into a CGImageRef.
+		pixelData = CFDataCreateWithBytesNoCopy(NULL, (const UInt8 *)rgba, pixelBytesLength, NULL);
 		dataProvider = CGDataProviderCreateWithCFData(pixelData);
 		theImage = CGImageCreate(width,
 								 height,
@@ -50,7 +47,7 @@ CGImageRef NZCGImageCreateUsingWebPData(CFDataRef webPData)
 								 32,	// our data has four components
 								 wordsPerLine*4,	// there are 32 bits or 4 bytes in a word
 								 colorSpace,
-								 kCGBitmapByteOrder32Host,	// our data is in host-endian format
+								 kCGBitmapByteOrder32Big | kCGImageAlphaLast,	// our data is in host-endian format
 								 dataProvider,
 								 NULL,	// we don't care about decode arrays
 								 true,	// sure, why not interpolate?
@@ -60,7 +57,6 @@ CGImageRef NZCGImageCreateUsingWebPData(CFDataRef webPData)
 		CGColorSpaceRelease(colorSpace);
 		CGDataProviderRelease(dataProvider);
 		CFRelease(pixelData);
-		free(y);
 		return theImage;
 	}
 	fprintf(stderr, "NZCGWebPFunctions: The data provided is not in WebP format.\n");
