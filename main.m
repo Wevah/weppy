@@ -102,7 +102,7 @@ NPError NPP_New(NPMIMEType pluginType, NPP instance, uint16_t mode, int16_t argc
 	NPBool supportsCoreAnimation, supportsInvalidatingCoreAnimation;
 	NPBool supportsCocoa;
 	
-    bzero(obj, sizeof(PluginObject));
+	memset(obj, 0, sizeof(PluginObject));
     
     obj->npp = instance;
     instance->pdata = obj;
