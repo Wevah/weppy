@@ -22,7 +22,7 @@ CGImageRef NZCGImageCreateUsingWebPData(CFDataRef webPData)
 {
 	int32_t width, height;
 	
-	if (CFDataGetLength(webPData) > INT_MAX)	// highly unlikely to happen; just checking anyway
+	if (CFDataGetLength(webPData) > INT32_MAX)	// highly unlikely to happen; just checking anyway
 		return NULL;
 	
 	// Step 1: Decode the data.

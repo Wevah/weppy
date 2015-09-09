@@ -302,7 +302,7 @@ NPError NPP_DestroyStream(NPP instance, NPStream* stream, NPReason reason)
 
 int32_t NPP_WriteReady(NPP instance, NPStream* stream)
 {
-    return INT_MAX;	// bring it on!
+    return INT32_MAX;	// bring it on!
 }
 
 
