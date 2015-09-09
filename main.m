@@ -401,7 +401,7 @@ int16_t NPP_HandleEvent(NPP instance, void* event)
 				}
 				break;
 			case NPCocoaEventMouseDown:
-				if (cocoaEvent->data.mouse.buttonNumber == 1) {
+				if (cocoaEvent->data.mouse.buttonNumber == 1) { // right click
 					if (!obj->menuHandler)
 						obj->menuHandler = [[MenuHandler alloc] initWithBrowserFuncs:browser instance:instance];
 
